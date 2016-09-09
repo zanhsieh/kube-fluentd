@@ -36,7 +36,7 @@ RUN apk add --no-cache curl && \
 # Directs output from go-dnsmasq to:
 ENV GO_DNSMASQ_LOG_FILE /dev/stdout
 
-ENV FLUENTD_VERSION 0.14.3
+ENV FLUENTD_VERSION 0.12.29
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
@@ -52,10 +52,11 @@ RUN apk --no-cache --update add \
     gem install fluentd -v $FLUENTD_VERSION && \
     # We install fluent plugins here because doing so requires build-base and ruby-dev in order to build native extensions
     gem install fluent-plugin-parser && \
+    gem install fluent-plugin-grep && \
+    gem install fluent-plugin-record-reformer && \
     gem install fluent-plugin-kubernetes_metadata_filter -v 0.24.0 && \
     gem install fluent-plugin-elasticsearch -v 1.5.0 && \
     gem install fluent-plugin-prometheus -v 0.1.3 && \
-    gem install fluent-plugin-record-reformer && \
     apk del build-base ruby-dev && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 

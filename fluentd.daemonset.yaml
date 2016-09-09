@@ -4,18 +4,18 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluentd-cloud-logging
+  name: fluentd
   namespace: kube-system
 spec:
   template:
     metadata:
       labels:
-        k8s-app: fluentd-logging
+        app: fluentd
     spec:
       dnsPolicy: Default
       containers:
-      - name: fluentd-cloud-logging
-        image: mumoshu/kube-fluentd:0.14.1
+      - name: fluentd
+        image: 192.168.99.100:5000/fluentd:latest
         resources:
           limits:
             memory: 200Mi
@@ -27,36 +27,6 @@ spec:
         env:
         - name: FLUENTD_ARGS
           value: -v
-        - name: GOOGLE_FLUENTD_PRIVATE_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: private.key.id
-        - name: GOOGLE_FLUENTD_PRIVATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: private.key
-        - name: GOOGLE_FLUENTD_PROJECT_ID
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: project.id
-        - name: GOOGLE_FLUENTD_CLIENT_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: client.email
-        - name: GOOGLE_FLUENTD_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: client.id
-        - name: GOOGLE_FLUENTD_CLIENT_X509_CERT_URL
-          valueFrom:
-            secretKeyRef:
-              name: fluentd
-              key: client.x509.cert.url
         volumeMounts:
         - name: varlog
           mountPath: /var/log

@@ -36,7 +36,7 @@ RUN apk add --no-cache curl && \
 # Directs output from go-dnsmasq to:
 ENV GO_DNSMASQ_LOG_FILE /dev/stdout
 
-ENV FLUENTD_VERSION %%FLUENTD_VERSION%%
+ENV FLUENTD_VERSION 0.12.29
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
@@ -108,8 +108,8 @@ EXPOSE 9880
 # in_syslog
 EXPOSE 5140
 
-# in_prometheus
-EXPOSE 24231
+# in_scribe
+EXPOSE 1463
  
 ENTRYPOINT [ "/init" ]
 

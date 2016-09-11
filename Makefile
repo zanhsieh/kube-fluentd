@@ -1,10 +1,11 @@
 KUBE_FLUENTD_VERSION ?= 0.9.1
-FLUENTD_VERSION ?= 0.12.39
+FLUENTD_VERSION ?= 0.12.29
 
-REPOSITORY ?= 192.168.99.100:5000/kube-fluentd
+REPOSITORY ?= 192.168.99.100:5000/fluentd
 TAG ?= $(FLUENTD_VERSION)-$(KUBE_FLUENTD_VERSION)
 IMAGE ?= $(REPOSITORY):$(TAG)
 ALIAS ?= $(REPOSITORY):$(FLUENTD_VERSION)
+LATEST ?= $(REPOSITORY):latest
 
 BUILD_ROOT ?= build/$(TAG)
 DOCKERFILE ?= $(BUILD_ROOT)/Dockerfile
@@ -15,10 +16,10 @@ SAVED_IMAGE ?= $(DOCKER_CACHE)/image-$(FLUENTD_VERSION).tar
 
 .PHONY: build
 build: $(DOCKERFILE) $(ROOTFS) $(FLUENT_CONF)
-	cd $(BUILD_ROOT) && docker build -t $(IMAGE) . && docker tag $(IMAGE) $(ALIAS)
+	cd $(BUILD_ROOT) && docker build -t $(IMAGE) . && docker tag $(IMAGE) $(ALIAS) && docker tag $(IMAGE) $(LATEST)
 
 publish:
-	docker push $(IMAGE) && docker push $(ALIAS)
+	docker push $(LATEST) && docker push $(IMAGE) && docker push $(ALIAS)
 
 $(DOCKERFILE): $(BUILD_ROOT)
 	sed 's/%%FLUENTD_VERSION%%/'"$(FLUENTD_VERSION)"'/g;' Dockerfile.template > $(DOCKERFILE)
@@ -54,3 +55,8 @@ docker-run: DOCKER_CMD ?=
 docker-run:
 	docker run --rm -it \
 	$(IMAGE) $(DOCKER_CMD)
+
+clean:
+	rm -fR ${BUILD_ROOT}
+	docker rmi $(IMAGE) $(ALIAS) $(LATEST)
+	

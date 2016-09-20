@@ -10,7 +10,8 @@
 <source>
   @type tail
   read_from_head true
-  path /var/log/containers/*.log
+  path /var/log/containers/{{ getenv "B2B_WEB_PATTERN" }}*.log
+  exclude_path ["/var/log/containers/*POD*.log"]
   pos_file /var/log/fluentd-docker.pos
   time_format %Y-%m-%dT%H:%M:%S
   tag docker.*
@@ -28,26 +29,26 @@
 </filter>
 <filter>
   @type prometheus
-      
+
   # common labels for all metrics
-  <labels> 
+  <labels>
     type ${type}
     status ${status}
     path ${path}
     method ${method}
-  </labels> 
-      
+  </labels>
+
   <metric>
     name b2b_web_duration
     type gauge
     desc b2b web duration gauge
-    key duration 
+    key duration
   </metric>
   <metric>
     name b2b_web_req_size
     type gauge
     desc b2b web request size
-    key req_size 
+    key req_size
   </metric>
   <metric>
     name b2b_web_resp_size
@@ -57,8 +58,8 @@
   </metric>
 </filter>
 <match docker.var.log.containers.*.log>
-    @type remote_syslog
-    host logs4.papertrailapp.com
-    port 16282
-    tag b2b-web
+  @type remote_syslog
+  host logs4.papertrailapp.com
+  port 16282
+  tag b2b-web
 </match>

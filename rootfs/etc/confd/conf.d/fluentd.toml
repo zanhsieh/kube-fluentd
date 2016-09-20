@@ -1,0 +1,5 @@
+[template]
+src = "fluent.conf.tmpl"
+dest = "/fluentd/etc/fluent.conf"
+check_cmd = "find /var/log/containers -type l -iname '*b2b-dev-*.log'"
+reload_cmd = "kill -HUP $(ps -ef | grep fluentd | grep -v grep | grep -v s6 | awk '{ print $1 }' | tr '\n' ' ')"

@@ -1,3 +1,3 @@
 #!/usr/bin/with-contenv sh
 
-confd -log-level debug -onetime -backend env
+confd -log-level debug -interval 5 -backend env -config-file /etc/confd/conf.d/fluentd.toml

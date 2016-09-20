@@ -85,8 +85,6 @@ COPY rootfs /
 
 COPY fluent.conf /fluentd/etc/
 
-RUN sed -i -e 's/type/@type/g' /fluentd/etc/fluent.conf
-
 ENV FLUENTD_ARGS="-v"
 ENV FLUENTD_CONF="fluent.conf"
 
